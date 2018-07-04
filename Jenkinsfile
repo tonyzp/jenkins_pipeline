@@ -4,14 +4,14 @@ pipeline {
     agent any
 
     stages {
-        stage('Build Job 1') {
+        stage('Build Driver') {
             steps {
-                build 'example-job1'
+                build job: 'Build-Driver', parameters: [string(name: 'project_build_mode', value: '测试环境'), [$class: 'GitParameterValue', name: 'project_branch_name', value: 'origin/dev']]
             }
         }
-        stage('Build Job 2') {
+        stage('Build Consignor') {
             steps {
-                build 'example-job2'
+                build job: 'Build-Consignor', parameters: [string(name: 'project_build_mode', value: '测试环境'), [$class: 'GitParameterValue', name: 'project_branch_name', value: 'origin/develop']]
             }
         }
     }
