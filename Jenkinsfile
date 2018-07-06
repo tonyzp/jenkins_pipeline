@@ -3,22 +3,29 @@ pipeline {
   stages {
     stage('Prepare') {
       steps {
-        sh '''echo "Prepare build..."
-
-pipeline_run_script_path=`pwd`
-
-echo "pipeline_run_script_path = $pipeline_run_script_path"
-
-echo "USERNAME = $USERNAME"
-
-echo "PASSWORD = $PASSWORD"'''
+        sh '''
+        echo "Prepare build..."
+        pipeline_run_script_path=`pwd`
+        echo "pipeline_run_script_path = $pipeline_run_script_path"
+        echo "USERNAME = $USERNAME"
+        echo "PASSWORD = $PASSWORD"
+        '''
       }
     }
     stage('Build') {
       steps {
-        sh '''echo "Building..."
-
-echo "Building succeed!"'''
+        sh '''
+        echo "Building..."
+        echo "Building succeed!"
+        '''
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sh '''
+        echo "Deploying..."
+        echo "Deploy succeed!"
+        '''
       }
     }
   }
