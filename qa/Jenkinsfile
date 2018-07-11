@@ -1,0 +1,11 @@
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        echo params.BUILD_MODE
+        // build job: 'Build-Driver', parameters: [[$class: 'GitParameterValue', name: 'BUILD_BRANCH_NAME', value: 'origin/dev'], string(name: 'BUILD_SERVER_TYPE', value: 'Development'), string(name: 'BUILD_COMPILE_MODE', value: 'Debug')]
+      }
+    }
+  }
+}
