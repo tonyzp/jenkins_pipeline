@@ -5,10 +5,11 @@ pipeline {
       steps {
         // Step: Build job
         script {
-          // Read job configurations from yaml file, file name rule is [BUILD_TARGET_JOB_NAME]_[BUILD_MODE]_Config.yaml
+          // Read job configurations from yaml file, the file name rule is [BUILD_TARGET_JOB_NAME]_[BUILD_MODE]_Config.yaml
           def build_config_file = env.BUILD_TARGET_JOB_NAME + "_" + params.BUILD_MODE + "_" + "Config.yaml"
           def build_config_path = "${env.WORKSPACE}/qa/configs/${build_config_file}"
           def config = readYaml file:build_config_path
+          
           // Print all parameters
           echo "BUILD_TARGET_JOB_NAME = ${env.BUILD_TARGET_JOB_NAME}"
           echo "BUILD_MODE = ${params.BUILD_MODE}"
@@ -17,22 +18,13 @@ pipeline {
           echo "build_config_path = ${build_config_path}"
           echo "build_server_type = ${config.build_server_type}"
           echo "build_compile_mode = ${config.build_compile_mode}"
+          
           // Build job
-          build job: env.BUILD_TARGET_JOB_NAME, parameters: [[$class: 'GitParameterValue', name: 'BUILD_BRANCH_NAME', value: params.BUILD_BRANCH_NAME], string(name: 'BUILD_SERVER_TYPE', value: config.build_server_type), string(name: 'BUILD_COMPILE_MODE', value: config.build_compile_mode), booleanParam(name: 'BUILD_FORCE_INCREASE_BUILD_NUMBER', value: false)]
+          def run = build job: env.BUILD_TARGET_JOB_NAME, parameters: [[$class: 'GitParameterValue', name: 'BUILD_BRANCH_NAME', value: params.BUILD_BRANCH_NAME], string(name: 'BUILD_SERVER_TYPE', value: config.build_server_type), string(name: 'BUILD_COMPILE_MODE', value: config.build_compile_mode), booleanParam(name: 'BUILD_FORCE_INCREASE_BUILD_NUMBER', value: false)]
+
+          // Set build description
+          currentBuild.description = run.description
         }
-      }
-    }
-  }
-  post {
-    success {
-      // Step: Set build description
-      script {
-        // Read property values from job workspace env.prop file
-        def file = "${env.JENKINS_HOME}/jobs/${env.BUILD_TARGET_JOB_NAME}/workspace/env.prop"
-        def prop = readProperties file:file
-        echo "BUILD_PRODUCT_DISPLAY_NAME = ${prop.BUILD_PRODUCT_DISPLAY_NAME}"
-        echo "DOWNLOAD_URL = ${prop.DOWNLOAD_URL}"
-        currentBuild.description = "<div style='font-size:16px;color:green;'>${prop.BUILD_PRODUCT_DISPLAY_NAME}  <a href='${prop.DOWNLOAD_URL}'>下载<a></div>"
       }
     }
   }
