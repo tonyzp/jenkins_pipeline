@@ -1,0 +1,4 @@
+# 服务器环境
+build_server_type: production
+# 编译模式
+build_compile_mode: performance
